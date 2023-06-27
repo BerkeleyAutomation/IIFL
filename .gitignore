@@ -1,0 +1,17 @@
+*.pyc
+*.png
+*.pkl
+*.p
+*.jpg
+*.zip
+*.gif
+*.env
+*.out
+media/
+wandb/
+__pycache__/
+.DS_Store
+logs/
+experiments/
+runs_config.yaml
+gpu_config.yaml

@@ -1,0 +1,3 @@
+# whether or not to prefetch all supervisor actions at once
+prefetch: False
+human_player_map: [0, 1, 2]

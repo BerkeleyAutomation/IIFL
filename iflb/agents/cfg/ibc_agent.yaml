@@ -1,0 +1,37 @@
+# learning rate
+lr: 0.0005
+# minibatch size
+batch_size: 512
+# model updates per sim step. if -1, set equal to num humans
+updates_per_step: 2000
+# if True, don't use human transitions in safety critic data
+mask_human: False
+# number of NNs in ensemble
+num_policies: 2
+# offline demo gradient steps
+policy_pretraining_steps: 100000
+# NN hidden layer size
+hidden_size: 256
+# replay buffer size
+replay_size: 1000000
+# pretrain policy on offline demos
+task_demos: True
+# max number of offline constraint violation transitions
+num_task_transitions: 250
+# behavior cloning: more data, no online updates
+bc: False
+# number of counterexamples to use during EBM training
+stochastic_optimizer_train_samples: 8
+# spectral normalized hidden layers
+spectral_norm: True
+# number of NN hidden layers
+hidden_layers: 6
+# dfo or langevin optimizers
+stochastic_optimizer_type: langevin 
+# number of counterexamples to use during EBM inference
+stochastic_optimizer_inference_samples: 512
+# center and standardize input
+normalize_inputs: True
+# apply gradient penalty during training
+gradient_penalty: True
+
