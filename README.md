@@ -1,5 +1,9 @@
 # IIFL: Implicit Interactive Fleet Learning
 
+Code for the following paper:
+
+G. Datta*, R. Hoque*, A. Gu, E. Solowjow, K. Goldberg. IIFL: Implicit Interactive Fleet Learning from Heterogeneous Human Supervisors. *Conference on Robot Learning (CoRL)*, 2023.
+
 ## Installation
 
 Installation instructions are similar to the [IFL Benchmark](https://github.com/BerkeleyAutomation/ifl_benchmark) on Github. First create a Python 3.8 virtual environment and install dependencies by running `. install.sh`.
