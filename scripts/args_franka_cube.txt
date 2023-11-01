@@ -4,7 +4,7 @@
 --logdir_suffix=tmp
 --num_envs=100
 --num_humans=10
---num_players=2
+--num_players=4
 --num_steps=10005
 --min_int_time=5
 --hard_reset_time=5

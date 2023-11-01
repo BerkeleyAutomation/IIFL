@@ -658,26 +658,32 @@ class FrankaCubeStack(VecTask):
             hand_rot = self.states["eef_quat"][env_idx].unsqueeze(0)
             yaw_q1 = self._cube_grasping_yaw(self.states["cubeA_quat"][env_idx].unsqueeze(0), self.corners, 0)
             yaw_q2 = self._cube_grasping_yaw(self.states["cubeA_quat"][env_idx].unsqueeze(0), self.corners, 1)
+            yaw_q3 = self._cube_grasping_yaw(self.states["cubeA_quat"][env_idx].unsqueeze(0), self.corners, 2)
+            yaw_q4 = self._cube_grasping_yaw(self.states["cubeA_quat"][env_idx].unsqueeze(0), self.corners, 3)
             box_yaw_dir1 = quat_axis(yaw_q1, 0)
             box_yaw_dir2 = quat_axis(yaw_q2, 0)
+            box_yaw_dir3 = quat_axis(yaw_q3, 0)
+            box_yaw_dir4 = quat_axis(yaw_q4, 0)
             hand_yaw_dir = quat_axis(hand_rot, 0)
             yaw_dot1 = torch.bmm(box_yaw_dir1.view(1,1,3), hand_yaw_dir.view(1,3,1)).squeeze(-1)
             yaw_dot2 = torch.bmm(box_yaw_dir2.view(1,1,3), hand_yaw_dir.view(1,3,1)).squeeze(-1)
+            yaw_dot3 = torch.bmm(box_yaw_dir3.view(1,1,3), hand_yaw_dir.view(1,3,1)).squeeze(-1)
+            yaw_dot4 = torch.bmm(box_yaw_dir4.view(1,1,3), hand_yaw_dir.view(1,3,1)).squeeze(-1)
             if env_idx in self.position_check:
                 pos_err5 = self.position_check[env_idx] + self.grasp_offset_vec * 15 - self.states["eef_pos"][env_idx]
             if self.stages[env_idx] == 0: # move above cube A
-                if box_dot_A >= 0.99 and (yaw_dot1 >= 0.95 or yaw_dot2 >= 0.95) and box_dist_A < self.grasp_offset: # skip straight to stage 3
+                if box_dot_A >= 0.99 and (yaw_dot1 >= 0.95 or yaw_dot2 >= 0.95 or yaw_dot3 >= 0.95 or yaw_dot4 >= 0.95) and box_dist_A < self.grasp_offset: # skip straight to stage 3
                     self.stages[env_idx] += 3
                     self.position_check[env_idx] = self.states["eef_pos"][env_idx].clone()
-                if box_dot_A >= 0.99 and (yaw_dot1 >= 0.95 or yaw_dot2 >= 0.95):
+                if box_dot_A >= 0.99 and (yaw_dot1 >= 0.95 or yaw_dot2 >= 0.95 or yaw_dot3 >= 0.95 or yaw_dot4 >= 0.95):
                     self.stages[env_idx] += 2
                 elif box_dot_A >= 0.99 and box_dist_A < self.grasp_offset * 12:
                     self.stages[env_idx] += 1
             elif self.stages[env_idx] == 1: # rotate
-                if (yaw_dot1 >= 0.95 or yaw_dot2 >= 0.95) and box_dist_A < self.grasp_offset:
+                if (yaw_dot1 >= 0.95 or yaw_dot2 >= 0.95 or yaw_dot3 >= 0.95 or yaw_dot4 >= 0.95) and box_dist_A < self.grasp_offset:
                     self.stages[env_idx] += 2
                     self.position_check[env_idx] = self.states["eef_pos"][env_idx].clone()
-                elif (yaw_dot1 >= 0.95 or yaw_dot2 >= 0.95):
+                elif (yaw_dot1 >= 0.95 or yaw_dot2 >= 0.95 or yaw_dot3 >= 0.95 or yaw_dot4 >= 0.95):
                     self.stages[env_idx] += 1
             elif self.stages[env_idx] == 2: # descend to pre-grasp
                 if box_dist_A < self.grasp_offset:
@@ -754,8 +760,12 @@ class FrankaCubeStack(VecTask):
         """ player_idx determines which sides to grasp """
         rc = quat_rotate(q, corners)
         yaw = (torch.atan2(rc[:, 1], rc[:, 0]) - 0.25 * np.pi) % (0.5 * np.pi)
-        if player_idx % 2 == 0:
+        if player_idx == 1:
+            yaw -= np.pi
+        elif player_idx == 2:
             yaw -= (0.5 * np.pi)
+        elif player_idx == 3:
+            yaw += (0.5 * np.pi)
         theta = 0.5 * yaw
         w = theta.cos()
         x = torch.zeros_like(w)

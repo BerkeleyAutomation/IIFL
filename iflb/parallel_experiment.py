@@ -243,7 +243,10 @@ class ParallelExperiment:
                     continue # Once we reset, nothing more to log/do for this env
                 # Otherwise get human action and override policy action
                 else:
-                    player_idx = self.human_player_map[human_idx % self.exp_cfg.num_players]
+                    if self.exp_cfg.num_players == 1:
+                        player_idx = self.exp_cfg.use_player
+                    else:
+                        player_idx = self.human_player_map[human_idx % self.exp_cfg.num_players]
                     human_action = self.supervisor.get_action(self.state[env_idx], player_idx, env_idx)
                     if human_action == 'reset': # reset supervisor
                         to_reset.add(env_idx)
@@ -354,7 +357,10 @@ class ParallelExperiment:
                     continue # Once we reset, nothing more to log/do for this env
                 # Otherwise get human action and override policy action
                 else:
-                    player_idx = self.human_player_map[human_idx % self.exp_cfg.num_players]
+                    if self.exp_cfg.num_players == 1:
+                        player_idx = self.exp_cfg.use_player
+                    else:
+                        player_idx = self.human_player_map[human_idx % self.exp_cfg.num_players]
                     action = self.supervisor.get_action(self.state[env_idx], player_idx, env_idx)
             else:
                 # If the env is in constraint violating state, but no human available to help us...

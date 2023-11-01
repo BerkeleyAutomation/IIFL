@@ -62,6 +62,8 @@ class IsaacGymRLSupervisor(ParallelSupervisor):
             self.prefetched[idx] = True
 
     def get_action(self, state, player_idx, env_idx=None):
+        if self.num_players == 1:
+            player_idx = 0
         if self.prefetch:
             assert self.prefetched[player_idx]
             return self.actions[player_idx][env_idx].cpu()
